@@ -1,13 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Animations;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class animatordeneme : MonoBehaviour
 {
-    public AnimatorController cont;
-
-
     public int hand_left = 1; 
     public int hand_right = 1;
     public string[] hand_left_coded = { "0", "0", "0", "1" };
