@@ -64,8 +64,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CanvasManager.cs" />
+    <Compile Include="Assets\FingersAndAnimatorController.cs" />
+    <Compile Include="Assets\GameManager.cs" />
+    <Compile Include="Assets\LeftHandController.cs" />
     <Compile Include="Assets\MoveArmManager.cs" />
-    <Compile Include="Assets\animatordeneme.cs" />
+    <Compile Include="Assets\RightHandController.cs" />
     <Reference Include="UnityEngine">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.17f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

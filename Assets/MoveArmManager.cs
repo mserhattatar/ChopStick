@@ -1,44 +1,60 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MoveArmManager : MonoBehaviour
 {
-    public GameObject rightArm;
-    public GameObject leftArm;
-    private Vector3 rightArmvec3;
-    private Vector3 leftArmvec3;
+
+    public bool MOVMENTUPDATE;
+    private bool Stop;
+
+    public GameObject rightSholder;
+    public GameObject rightHand;
+
+    public GameObject leftSholder;
+    public GameObject leftHand;
+
+    private Vector3 rightSholderVector3;
+    private Vector3 leftSholderVector3;
 
     void Update()
     {
-
-        OnMouseDrag();
-
-
-        if (Input.touchCount > 0)
+        if((CanvasManager.instance.leftHandActive && !Stop) || (CanvasManager.instance.rightHandActive && !Stop))
         {
-            Touch touch = Input.GetTouch(0); // get first touch since touch count is greater than zero
-
-            if (touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved)
-            {
-                // get the touch position from the screen touch to world point
-                Vector3 touchedPos = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10));
-                // lerp and set the position of the current object to that of the touch, but smoothly over time.
-                transform.position = Vector3.Lerp(transform.position, touchedPos, Time.deltaTime);
-            }
+            rightSholderVector3 = rightHand.transform.position;
+            leftSholderVector3 = leftHand.transform.position;
+            Stop = true;
         }
+       
+        
+
+
+        if (CanvasManager.instance.leftHandActive && MOVMENTUPDATE)
+            LeftHandMovment();
+        if (CanvasManager.instance.rightHandActive && MOVMENTUPDATE)
+            RightHandMovment();
     }
-    void OnMouseDrag()
+    void RightHandMovment()
     {
-        Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, leftArm.transform.position.z);
-        Vector3 objPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+        if (Input.GetMouseButton(1))
+        {
+            Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, rightHand.transform.position.z);
+            Vector3 objPosition = Camera.main.ScreenToWorldPoint(mousePosition);
 
-        leftArm.transform.position = objPosition;
+            rightHand.transform.position = Vector3.Lerp(rightHand.transform.position, objPosition, Time.deltaTime * 3f);
+        }
+        else if (rightHand.transform.position != rightSholderVector3)
+            rightHand.transform.position = Vector3.Lerp(rightHand.transform.position, rightSholderVector3, Time.deltaTime * 3f);  
     }
 
-    private void MoveArm()
+    void LeftHandMovment()
     {
+        if (Input.GetMouseButton(1))
+        {
+            Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, leftHand.transform.position.z);
+            Vector3 objPosition = Camera.main.ScreenToWorldPoint(mousePosition);
 
+            leftHand.transform.position = Vector3.Lerp(leftHand.transform.position, objPosition, Time.deltaTime * 3f);
+        }
+        else if (leftHand.transform.position != leftSholderVector3)
+            leftHand.transform.position = Vector3.Lerp(leftHand.transform.position, leftSholderVector3, Time.deltaTime * 3f);      
     }
-
 }
