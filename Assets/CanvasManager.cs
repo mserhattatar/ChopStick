@@ -13,6 +13,8 @@ public class CanvasManager : MonoBehaviour
         instance = this;
     }
 
+    // if player play then turn is must be changed.
+
     public void RightButton()
     {
         Debug.Log("rightButton");

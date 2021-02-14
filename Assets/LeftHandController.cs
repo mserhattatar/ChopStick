@@ -12,6 +12,7 @@ public class LeftHandController : MonoBehaviour
             if (other.gameObject == rightcube)
             {
                 Debug.Log("benim sol elim kendi sağ elime çarptı");
+                
             }
             else
             {

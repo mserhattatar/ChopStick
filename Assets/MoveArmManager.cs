@@ -12,19 +12,28 @@ public class MoveArmManager : MonoBehaviour
     public GameObject leftSholder;
     public GameObject leftHand;
 
-    private Vector3 rightSholderVector3;
-    private Vector3 leftSholderVector3;
+    private Vector3 rightHandFirstPos;
+    private Vector3 leftHandFirstPos;
+    private Vector3 leftSholderFirstPos;
+    private Vector3 rightSholderFirstPos;
+
+    private Vector3 leftArmLength;
+    private Vector3 rightArmLength;
 
     void Update()
     {
         if((CanvasManager.instance.leftHandActive && !Stop) || (CanvasManager.instance.rightHandActive && !Stop))
         {
-            rightSholderVector3 = rightHand.transform.position;
-            leftSholderVector3 = leftHand.transform.position;
             Stop = true;
+            rightSholderFirstPos = rightSholder.transform.position;
+            leftSholderFirstPos = leftSholder.transform.position;
+            rightHandFirstPos = rightHand.transform.position;
+            leftHandFirstPos = leftHand.transform.position;
+            leftArmLength = leftHand.transform.position - leftSholder.transform.position;
+            rightArmLength = rightHand.transform.position - rightSholder.transform.position;
+            Debug.Log("leftHandFirstPos  " + leftHandFirstPos);
+            Debug.Log("rightHandFirstPos  " + rightHandFirstPos);            
         }
-       
-        
 
 
         if (CanvasManager.instance.leftHandActive && MOVMENTUPDATE)
@@ -32,29 +41,31 @@ public class MoveArmManager : MonoBehaviour
         if (CanvasManager.instance.rightHandActive && MOVMENTUPDATE)
             RightHandMovment();
     }
-    void RightHandMovment()
+
+    void MoveHand(GameObject hand, Vector3 handfirstpos, GameObject sholder, Vector3 sholderfirstpos, Vector3 armlenght)
     {
         if (Input.GetMouseButton(1))
         {
-            Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, rightHand.transform.position.z);
+            Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, handfirstpos.z + 0.08f);
             Vector3 objPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-
-            rightHand.transform.position = Vector3.Lerp(rightHand.transform.position, objPosition, Time.deltaTime * 3f);
+            Vector3 ss = objPosition - armlenght;
+            sholder.transform.position = Vector3.Lerp(sholder.transform.position, ss, Time.deltaTime * 3f);
+            
         }
-        else if (rightHand.transform.position != rightSholderVector3)
-            rightHand.transform.position = Vector3.Lerp(rightHand.transform.position, rightSholderVector3, Time.deltaTime * 3f);  
+        else if (hand.transform.position != handfirstpos)
+        {
+            sholder.transform.position = Vector3.Lerp(sholder.transform.position, sholderfirstpos, Time.deltaTime * 3f);
+        }
+            
+    }
+
+    void RightHandMovment()
+    {
+        MoveHand(rightHand, rightHandFirstPos, rightSholder,rightSholderFirstPos, rightArmLength);
     }
 
     void LeftHandMovment()
     {
-        if (Input.GetMouseButton(1))
-        {
-            Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, leftHand.transform.position.z);
-            Vector3 objPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-
-            leftHand.transform.position = Vector3.Lerp(leftHand.transform.position, objPosition, Time.deltaTime * 3f);
-        }
-        else if (leftHand.transform.position != leftSholderVector3)
-            leftHand.transform.position = Vector3.Lerp(leftHand.transform.position, leftSholderVector3, Time.deltaTime * 3f);      
+        MoveHand(leftHand, leftHandFirstPos, leftSholder, leftSholderFirstPos,leftArmLength);       
     }
 }
