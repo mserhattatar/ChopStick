@@ -8,27 +8,9 @@ public class FingersAndAnimatorController : MonoBehaviour
     public string[] hand_left_coded = { "0", "0", "0", "1" };
     public string[] hand_right_coded = { "1", "0", "0", "0" };
 
-    private bool delay;
-
-
     private void Start()
     {
         PlayFingerChangeAnimation();
-    }
-    private void Update()
-    {
-        //if (Input.GetMouseButton(0) && !delay)
-        //{
-        //    delay = true;
-        //    int number = Random.Range(1, 5);
-        //    int number2 = Random.Range(1, 5);
-        //    RightHandChange(1);
-        //    LeftHandChange(1);
-        //}
-        //if (Input.GetMouseButton(1) && delay)
-        //{
-        //    delay = false;           
-        //}
     }
 
     //TODO
@@ -56,6 +38,7 @@ public class FingersAndAnimatorController : MonoBehaviour
         }
         hand_right_coded = handcoded;
         PlayFingerChangeAnimation();
+        GameManager.instance.Turn();
     }
 
     public void LeftHandChange(int newFingerToAdd)
@@ -74,6 +57,7 @@ public class FingersAndAnimatorController : MonoBehaviour
         }
         hand_left_coded = handcoded;
         PlayFingerChangeAnimation();
+        GameManager.instance.Turn();
     }
 
     private void PlayFingerChangeAnimation()
@@ -87,4 +71,5 @@ public class FingersAndAnimatorController : MonoBehaviour
     {
         Model.GetComponent<Animator>().CrossFade(aniname, 1);
     }
+  
 }
