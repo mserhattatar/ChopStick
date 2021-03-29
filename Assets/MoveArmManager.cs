@@ -34,7 +34,11 @@ public class MoveArmManager : MonoBehaviour
         leftHandFirstPos = leftHand.transform.position;
         leftArmLength = leftHand.transform.position - leftSholder.transform.position;
         rightArmLength = rightHand.transform.position - rightSholder.transform.position;
+        if (Player1)
+            Debug.Log("player1 left arm lenght = " + leftArmLength + "// right arm lenght = " + rightArmLength);
 
+        if (Player2)
+            Debug.Log("player2 left arm lenght = " + leftArmLength + "// right arm lenght = " + rightArmLength);
         StartUpdate = true;        
     }
 
@@ -54,10 +58,20 @@ public class MoveArmManager : MonoBehaviour
     void MoveHand(GameObject hand, Vector3 handfirstpos, GameObject sholder, Vector3 sholderfirstpos, Vector3 armlenght)
     {
         if (Input.GetMouseButton(1))
-        {    
-            Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, handfirstpos.z + 0.08f);           
+        {
+            Vector3 mousePosition;
+            if (Player1)
+                mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, handfirstpos.z + 0.08f);  
+            else
+                mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, handfirstpos.z + 0f);
+
             Vector3 objPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-            Vector3 newHandPos = objPosition - armlenght;            
+            Vector3 newHandPos;
+            if (Player1)
+                newHandPos = objPosition - armlenght;  
+            else
+                newHandPos = objPosition + armlenght;
+
             sholder.transform.position = Vector3.Lerp(sholder.transform.position, newHandPos, Time.deltaTime * 3f);            
         }
         else if (hand.transform.position != handfirstpos)
