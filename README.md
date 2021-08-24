@@ -1,5 +1,10 @@
 # Chopsticks Hand Game
 
+## It is still in progress
+
+For this game there are problems with finger movements. I am still working on it
+
+
 Chopsticks is a strategy game and considered under combinatorial game theory (CGT) which is a branch of mathematics and theoretical computer science. CGT game theory has been largely confined to two-player games that have a position in which the players take turns changing in defined ways or moves to achieve a defined winning condition[1].
 
 Chopsticks game is played with 2 players. Here are the main rules:
