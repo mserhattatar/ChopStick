@@ -17,7 +17,7 @@ public class LeftHandController : MonoBehaviour
             else
             {
                 Debug.Log("benim sol elim karşı tarafın sağ eline çarptı");
-                var fingerNumber = gameObject.GetComponentInParent<FingersAndAnimatorController>().hand_left;
+                var fingerNumber = gameObject.GetComponentInParent<FingersAndAnimatorController>().handLeft;
                 other.GetComponentInParent<FingersAndAnimatorController>().RightHandChange(fingerNumber);
             }              
         }
@@ -27,7 +27,7 @@ public class LeftHandController : MonoBehaviour
             if (other.gameObject != leftcube)
             { 
                 Debug.Log("benim sol elim karşı tarafın sol eline çarptı");
-                var fingerNumber = gameObject.GetComponentInParent<FingersAndAnimatorController>().hand_left;
+                var fingerNumber = gameObject.GetComponentInParent<FingersAndAnimatorController>().handLeft;
                 other.GetComponentInParent<FingersAndAnimatorController>().LeftHandChange(fingerNumber);
             }
         }

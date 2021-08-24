@@ -1,75 +1,71 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 public class FingersAndAnimatorController : MonoBehaviour
 {
-    public GameObject Model;
-    public int hand_left = 1; 
-    public int hand_right = 1;
-    public string[] hand_left_coded = { "0", "0", "0", "1" };
-    public string[] hand_right_coded = { "1", "0", "0", "0" };
+    [FormerlySerializedAs("Model")] public GameObject model;
+    [FormerlySerializedAs("hand_left")] public int handLeft = 1;
+    [FormerlySerializedAs("hand_right")] public int handRight = 1;
+
+    [FormerlySerializedAs("hand_left_coded")]
+    public string[] handLeftCoded = { "0", "0", "0", "1" };
+
+    [FormerlySerializedAs("hand_right_coded")]
+    public string[] handRightCoded = { "1", "0", "0", "0" };
 
     private void Start()
     {
         PlayFingerChangeAnimation();
     }
 
-    //TODO
-    // Elini rakibe vur
-    // Kendi iki elini birbirine vur (Iki elde de ayni sayida parmak varsa?) 0011 1100 -> 1111 0000 yada 0000 1111
-    // Bir elini bos olan diger eline vur (Elinde cift sayida parmak varsa vurabilirsin. Vurduktan sonra yari yariya paylasilacak parmaklar) 0000 1111 -> 0011 1100
-
-    // This funciton is to change the finger amount when somene hits that hand
-    // Elinde 1 vardi + 
-
 
     public void RightHandChange(int newFingerToAdd)
     {
-        hand_right += newFingerToAdd;
+        handRight += newFingerToAdd;
 
-        if (hand_right >= 5)
-            hand_right -= 5;
+        if (handRight >= 5)
+            handRight -= 5;
 
         string[] handcoded = { "0", "0", "0", "0" };
 
-        for (var i = 0; i < hand_right; i++)
+        for (var i = 0; i < handRight; i++)
         {
             handcoded[i] = "1";
-            
         }
-        hand_right_coded = handcoded;
+
+        handRightCoded = handcoded;
         PlayFingerChangeAnimation();
         GameManager.instance.Turn();
     }
 
     public void LeftHandChange(int newFingerToAdd)
     {
-        hand_left += newFingerToAdd;
+        handLeft += newFingerToAdd;
 
-        if (hand_left >= 5)
-            hand_left -= 5;
+        if (handLeft >= 5)
+            handLeft -= 5;
 
         string[] handcoded = { "0", "0", "0", "0" };
 
-        for (var i = 3; i > 3 - hand_left; i--)
+        for (var i = 3; i > 3 - handLeft; i--)
         {
             handcoded[i] = "1";
-            
         }
-        hand_left_coded = handcoded;
+
+        handLeftCoded = handcoded;
         PlayFingerChangeAnimation();
         GameManager.instance.Turn();
     }
 
     private void PlayFingerChangeAnimation()
     {
-        var animCode = string.Join("", hand_left_coded) + string.Join("", hand_right_coded);
+        var animCode = string.Join("", handLeftCoded) + string.Join("", handRightCoded);
         SetAnimationCrossFade(animCode);
         Debug.Log(animCode);
     }
 
-    private void SetAnimationCrossFade(string aniname)
+    private void SetAnimationCrossFade(string aniName)
     {
-        Model.GetComponent<Animator>().CrossFade(aniname, 1);
+        model.GetComponent<Animator>().CrossFade(aniName, 1);
     }
-  
 }

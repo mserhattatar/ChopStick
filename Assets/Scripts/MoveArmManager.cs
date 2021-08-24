@@ -1,123 +1,125 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 public class MoveArmManager : MonoBehaviour
 {
+    [FormerlySerializedAs("Player1")] public bool player1;
+    [FormerlySerializedAs("Player2")] public bool player2;
 
-    public bool Player1;
-    public bool Player2;
-   
+    private bool _stopStart, _startUpdate;
 
-    private bool StopStart;
-    private bool StartUpdate;
-
-    public GameObject rightSholder;
+    [FormerlySerializedAs("rightSholder")] public GameObject rightShoulder;
     public GameObject rightHand;
 
-    public GameObject leftSholder;
+    [FormerlySerializedAs("leftSholder")] public GameObject leftShoulder;
     public GameObject leftHand;
 
-    private Vector3 rightHandFirstPos;
-    private Vector3 leftHandFirstPos;
-    private Vector3 leftSholderFirstPos;
-    private Vector3 rightSholderFirstPos;
+    private Vector3 _rightHandFirstPos,
+        _leftHandFirstPos,
+        _leftShoulderFirstPos,
+        _rightShoulderFirstPos,
+        _leftArmLength,
+        _rightArmLength;
 
-    private Vector3 leftArmLength;
-    private Vector3 rightArmLength;
+    private void HandPositionData()
+    {
+        _stopStart = true;
+        var position3 = rightShoulder.transform.position;
+        _rightShoulderFirstPos = position3;
+        var position1 = leftShoulder.transform.position;
+        _leftShoulderFirstPos = position1;
+        var position2 = rightHand.transform.position;
+        _rightHandFirstPos = position2;
+        var position = leftHand.transform.position;
+        _leftHandFirstPos = position;
+        _leftArmLength = position - position1;
+        _rightArmLength = position2 - position3;
+        if (player1)
+            Debug.Log("player1 left arm lenght = " + _leftArmLength + "// right arm lenght = " + _rightArmLength);
 
-    private void PossitionData()
-    {        
-        //Void START working after animator fixed
-        StopStart = true;
-        rightSholderFirstPos = rightSholder.transform.position;
-        leftSholderFirstPos = leftSholder.transform.position;
-        rightHandFirstPos = rightHand.transform.position;
-        leftHandFirstPos = leftHand.transform.position;
-        leftArmLength = leftHand.transform.position - leftSholder.transform.position;
-        rightArmLength = rightHand.transform.position - rightSholder.transform.position;
-        if (Player1)
-            Debug.Log("player1 left arm lenght = " + leftArmLength + "// right arm lenght = " + rightArmLength);
-
-        if (Player2)
-            Debug.Log("player2 left arm lenght = " + leftArmLength + "// right arm lenght = " + rightArmLength);
-        StartUpdate = true;        
+        if (player2)
+            Debug.Log("player2 left arm lenght = " + _leftArmLength + "// right arm lenght = " + _rightArmLength);
+        _startUpdate = true;
     }
 
-    void Update()
+    private void Update()
     {
-        if ((CanvasManager.instance.leftHandActive && !StopStart) || (CanvasManager.instance.rightHandActive && !StopStart))
-            PossitionData();
-                    
-        if (!StartUpdate)
+        if ((CanvasManager.instance.leftHandActive && !_stopStart) ||
+            (CanvasManager.instance.rightHandActive && !_stopStart))
+            HandPositionData();
+
+        if (!_startUpdate)
             return;
 
-        PlayerHandMovment();
-        PlayerMovmentBack();
+        PlayerHandMovement();
+        PlayerMovementBackPos();
     }
-    
 
-    void MoveHand(GameObject hand, Vector3 handfirstpos, GameObject sholder, Vector3 sholderfirstpos, Vector3 armlenght)
+
+    private void MoveHand(GameObject hand, Vector3 handFirstPos, GameObject shoulder, Vector3 shoulderFirstPos,
+        Vector3 armLenght)
     {
         if (Input.GetMouseButton(1))
         {
-            Vector3 mousePosition;
-            if (Player1)
-                mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, handfirstpos.z + 0.08f);  
-            else
-                mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, handfirstpos.z + 0f);
+            var mousePosition = player1
+                ? new Vector3(Input.mousePosition.x, Input.mousePosition.y, handFirstPos.z + 0.08f)
+                : new Vector3(Input.mousePosition.x, Input.mousePosition.y, handFirstPos.z + 0f);
 
-            Vector3 objPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+            var objPosition = Camera.main.ScreenToWorldPoint(mousePosition);
             Vector3 newHandPos;
-            if (Player1)
-                newHandPos = objPosition - armlenght;  
+            if (player1)
+                newHandPos = objPosition - armLenght;
             else
-                newHandPos = objPosition + armlenght;
+                newHandPos = objPosition + armLenght;
 
-            sholder.transform.position = Vector3.Lerp(sholder.transform.position, newHandPos, Time.deltaTime * 3f);            
+            shoulder.transform.position = Vector3.Lerp(shoulder.transform.position, newHandPos, Time.deltaTime * 3f);
         }
-        else if (hand.transform.position != handfirstpos)
-            sholder.transform.position = Vector3.Lerp(sholder.transform.position, sholderfirstpos, Time.deltaTime * 4f);        
-    }      
-    
+        else if (hand.transform.position != handFirstPos)
+            shoulder.transform.position =
+                Vector3.Lerp(shoulder.transform.position, shoulderFirstPos, Time.deltaTime * 4f);
+    }
 
-    private void PlayerHandMovment()
+
+    private void PlayerHandMovement()
     {
-        if (Player1)
+        if (player1)
         {
             if (CanvasManager.instance.leftHandActive && GameManager.instance.turnPlayer)
-                LeftHandMovment();
+                LeftHandMovement();
             if (CanvasManager.instance.rightHandActive && GameManager.instance.turnPlayer)
-                RightHandMovment();
+                RightHandMovement();
         }
-        if (Player2)
+
+        else if (player2)
         {
             if (CanvasManager.instance.leftHandActive && !GameManager.instance.turnPlayer)
-                LeftHandMovment();
+                LeftHandMovement();
             if (CanvasManager.instance.rightHandActive && !GameManager.instance.turnPlayer)
-                RightHandMovment();
+                RightHandMovement();
         }
     }
-    void RightHandMovment()
+
+    private void RightHandMovement()
     {
-        MoveHand(rightHand, rightHandFirstPos, rightSholder,rightSholderFirstPos, rightArmLength);
+        MoveHand(rightHand, _rightHandFirstPos, rightShoulder, _rightShoulderFirstPos, _rightArmLength);
     }
 
-    void LeftHandMovment()
+    private void LeftHandMovement()
     {
-        MoveHand(leftHand, leftHandFirstPos, leftSholder, leftSholderFirstPos,leftArmLength);       
+        MoveHand(leftHand, _leftHandFirstPos, leftShoulder, _leftShoulderFirstPos, _leftArmLength);
     }
 
-    private void PlayerMovmentBack()
+    private void PlayerMovementBackPos()
     {
-        if (Input.GetMouseButton(1))
-            Debug.Log("fare kullaniliyor");
-
-        else if (rightHand.transform.position != rightHandFirstPos)
+        if (rightHand.transform.position != _rightHandFirstPos)
         {
-            rightSholder.transform.position = Vector3.Lerp(rightSholder.transform.position, rightSholderFirstPos, Time.deltaTime * 4f);
+            rightShoulder.transform.position = Vector3.Lerp(rightShoulder.transform.position, _rightShoulderFirstPos,
+                Time.deltaTime * 4f);
         }
-        else if (leftHand.transform.position != leftHandFirstPos)
+        else if (leftHand.transform.position != _leftHandFirstPos)
         {
-            leftSholder.transform.position = Vector3.Lerp(leftSholder.transform.position, leftSholderFirstPos, Time.deltaTime * 4f);
+            leftShoulder.transform.position =
+                Vector3.Lerp(leftShoulder.transform.position, _leftShoulderFirstPos, Time.deltaTime * 4f);
         }
     }
 }
